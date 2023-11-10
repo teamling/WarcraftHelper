@@ -121,24 +121,9 @@ void UnlockFPS::ResetOpenGL() {
 }
 
 void UnlockFPS::WriteFPSLimit() {
-	// 修改游戏刷新率上限
-	DEVMODE dm;
-	memset(&dm, 0, sizeof(DEVMODE));
-	dm.dmSize = sizeof(DEVMODE);
-	dm.dmDriverExtra = 0;
-	EnumDisplaySettings(NULL, ENUM_REGISTRY_SETTINGS, &dm);
-	if (dm.dmDisplayFrequency > 60) {
-		switch (this->m_War3Version) {
-			case Version::v127b:
-				SetGameOptValue(GetGameOpt(), 0, 4,  (DWORD)&dm.dmDisplayFrequency);	// refreshrate
-				break;
-			default:
-				SetGameOptValue(GetGameOpt(), 0, 4, dm.dmDisplayFrequency);				// refreshrate
-				break;
-		}
-		// SetGameOptValue(GetGameOpt(), 0, 22, 200);	// maxfps
-		// WriteDwordToReg("SOFTWARE\\Blizzard Entertainment\\Warcraft III\\Video", "refreshrate", dm.dmDisplayFrequency);
-	}
+	SetGameOptValue(GetGameOpt(), 0, 4, 1000);
+	SetGameOptValue(GetGameOpt(), 0, 22, 1000);	// maxfps
+	WriteDwordToReg("SOFTWARE\\Blizzard Entertainment\\Warcraft III\\Video", "refreshrate", 1000);
 }
 
 void UnlockFPS::Stop() {
