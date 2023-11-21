@@ -112,8 +112,6 @@ void UnlockFPS::ResetOpenGL() {
 }
 
 void UnlockFPS::WriteFPSLimit() {
-	::MessageBox(0, "WriteFPSLimit 1", "WriteFPSLimit 1", 0);
-
 	DEVMODE dm;
 	memset(&dm, 0, sizeof(DEVMODE));
 	dm.dmSize = sizeof(DEVMODE);
