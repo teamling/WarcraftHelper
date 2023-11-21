@@ -86,44 +86,44 @@ void UnlockFPS::Start() {
 	PatchMemory(addr, bytes, 1);
 	InlineHook((void*)d3d9_addr, GetD3d9Parameters, (void*&)org_GetD3d9Parameters);
 
-	// d3d重设窗口
-	if (d3d9_addr && is_enable_d3d_addr && *is_enable_d3d_addr) {
-		this->ResetD3D();
-	}
 	// opengl重设
-	if (is_enable_d3d_addr && !*is_enable_d3d_addr) {
-		this->ResetOpenGL();
-	}
-}
-
-void UnlockFPS::ResetD3D() {
-	// 强制游戏重新加载d3d
-	HWND target = GetWar3Window();
-	ShowWindow(target, SW_MINIMIZE);
-	ShowWindow(target, SW_SHOWNORMAL);
+	// this->ResetOpenGL();
 }
 
 void UnlockFPS::ResetOpenGL() {
-	//// 强制游戏重新加载opengl
-	//	HMODULE hOpengl = GetModuleHandle("opengl32.dll");
-	//	if (!hOpengl) {
-	//		return;
-	//	}
-	//	DWORD(*wglGetProcAddress)(const char*) = (DWORD(*)(const char*))GetProcAddress(hOpengl, "wglGetProcAddress");
-	//	if (!wglGetProcAddress) {
-	//		return;
-	//	}
-	//	DWORD(*wglSwapIntervalEXT)(DWORD) = (DWORD(*)(DWORD))wglGetProcAddress("wglSwapIntervalEXT");
-	//	if (!wglSwapIntervalEXT) {
-	//		return;
-	//	}
-	//	wglSwapIntervalEXT(1);
+	// 强制游戏重新加载opengl
+	HMODULE hOpengl = GetModuleHandle("opengl32.dll");
+	if (!hOpengl) {
+		::MessageBox(0, "hOpengl", "WriteFPSLimit", 0);
+		return;
+	}
+	DWORD(*wglGetProcAddress)(const char*) = (DWORD(*)(const char*))GetProcAddress(hOpengl, "wglGetProcAddress");
+	if (!wglGetProcAddress) {
+		::MessageBox(0, "wglGetProcAddress", "WriteFPSLimit", 0);
+		return;
+	}
+	DWORD(*wglSwapIntervalEXT)(DWORD) = (DWORD(*)(DWORD))wglGetProcAddress("wglSwapIntervalEXT");
+	if (!wglSwapIntervalEXT) {
+		::MessageBox(0, "wglSwapIntervalEXT 1", "WriteFPSLimit", 0);
+		return;
+	}
+	::MessageBox(0, "wglSwapIntervalEXT 2", "WriteFPSLimit", 0);
+	wglSwapIntervalEXT(0);
 }
 
 void UnlockFPS::WriteFPSLimit() {
-	SetGameOptValue(GetGameOpt(), 0, 4, 1000);
-	SetGameOptValue(GetGameOpt(), 0, 22, 1000);	// maxfps
-	WriteDwordToReg("SOFTWARE\\Blizzard Entertainment\\Warcraft III\\Video", "refreshrate", 1000);
+	::MessageBox(0, "WriteFPSLimit 1", "WriteFPSLimit 1", 0);
+
+	DEVMODE dm;
+	memset(&dm, 0, sizeof(DEVMODE));
+	dm.dmSize = sizeof(DEVMODE);
+	dm.dmDriverExtra = 0;
+	EnumDisplaySettings(NULL, ENUM_REGISTRY_SETTINGS, &dm);
+	if (dm.dmDisplayFrequency > 60) {
+		SetGameOptValue(GetGameOpt(), 0, 4, dm.dmDisplayFrequency);
+	}
+
+	SetGameOptValue(GetGameOpt(), 0, 22, 1000);
 }
 
 void UnlockFPS::Stop() {

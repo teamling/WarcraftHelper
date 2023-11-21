@@ -8,7 +8,6 @@ public:
 	UnlockFPS(DWORD gamedllBase, Version war3Version) : IHook(gamedllBase, war3Version) {};
 	virtual void Start();
 	virtual void Stop();
-	virtual void ResetD3D();
 	virtual void ResetOpenGL();
 	virtual void WriteFPSLimit();
 };
